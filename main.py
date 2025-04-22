@@ -1,15 +1,6 @@
 import os
 from langchain_groq import ChatGroq
 from langchain.prompts import ChatPromptTemplate
-from langchain_community.document_loaders import WebBaseLoader
-
-loader = WebBaseLoader('https://ltafantasy.com/pt')
-lista_documentos = loader.load
-documento = ''
-for doc in lista_documentos:
-  documento = documento + doc.page_content
-
-
 
 api_key = 'api-langchain'
 os.environ['GROQ_API_KEY'] = api_key
