@@ -5,7 +5,7 @@ from langchain_community.document_loaders import WebBaseLoader
 from langchain_community.document_loaders import YoutubeLoader
 from langchain_community.document_loaders import PyPDFLoader
 
-api_key = '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'
+api_key = 'api-langchain'
 os.environ['GROQ_API_KEY'] = api_key
 
 chat = ChatGroq(model='llama-3.3-70b-versatile')
