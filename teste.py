@@ -1,52 +1,28 @@
 import os
-
 from langchain_groq import ChatGroq
 from langchain.prompts import ChatPromptTemplate
 from langchain_community.document_loaders import WebBaseLoader
 
-# Carrega o conteúdo do site
-loader = WebBaseLoader('https://ltafantasy.com/pt')
+loader = WebBaseLoader("https://ltafantasy.com/pt")
 lista_documentos = loader.load()
-documento = ''.join(doc.page_content for doc in lista_documentos)
 
-# Configura a API key e inicializa o cliente Groq
-api_key = 'api-langchain'
+documento = ''
+for doc in lista_documentos:
+  documento = documento + doc.page_content
+
+
+
+api_key = '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'
 os.environ['GROQ_API_KEY'] = api_key
+
 chat = ChatGroq(model='llama-3.3-70b-versatile')
 
+template = ChatPromptTemplate.from_messages([
+    ('system', 'Você é um assistente amigável chamado Asimo e tem acesso as seguinte informações para dar as suas respostas: {documentos_informados}'),
+    ('user', '{input}')
+])
 
-def resposta_do_bot(lista_mensagens):
-    """
-    Constrói o prompt com histórico e invoca o modelo Groq, retornando o objeto de resposta.
-    """
-    template = ChatPromptTemplate.from_messages(
-        [('system', 'Você é um assistente amigável chamado Kuro')] + lista_mensagens
-    )
-    chain = template | chat
-    return chain.invoke({})
+chain = template | chat
+resposta = chain.invoke({'documentos_informados': documento, 'input': 'O que pode me dizer sobre o site que dei para o scrapping?'})
 
-
-def main():
-    print(
-        "Bem-vindo! Eu sou o Kuro, um chatbot criado pelo Gui!"
-        " (Digite 'x' se você quiser sair!)\n"
-    )
-    mensagens = []
-
-    while True:
-        pergunta = input('Usuário: ')
-        if pergunta.lower() == 'x':
-            break
-
-        mensagens.append(('user', pergunta))
-        resposta = resposta_do_bot(mensagens)
-        mensagens.append(('assistant', resposta.content))
-
-        # Exibe apenas o conteúdo da resposta
-        print(resposta.content)
-
-    print('\nAté logo!!')
-
-
-if __name__ == '__main__':
-    main()
+print(resposta.content)
