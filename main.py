@@ -6,7 +6,7 @@ from langchain_groq import ChatGroq
 from langchain.prompts import ChatPromptTemplate
 from langchain_community.document_loaders import WebBaseLoader, YoutubeLoader, PyPDFLoader
 
-# Carrega variáveis de ambiente do .env
+
 def load_env():
     load_dotenv()
     api_key = os.getenv('GROQ_API_KEY')
@@ -15,15 +15,14 @@ def load_env():
     os.environ['GROQ_API_KEY'] = api_key
     return api_key
 
-# Inicialização
+
 api_key = load_env()
 chat = ChatGroq(groq_api_key=api_key, model='llama3-70b-8192')
 app = Flask(__name__)
 
-# Estrutura das conversas: id -> {'name': str, 'history': [(role, text)], 'context': str}
 global_conversations = {}
 
-# Carregadores
+
 def load_site(url: str) -> str:
     docs = WebBaseLoader(url).load()
     return ''.join(d.page_content for d in docs)
@@ -36,7 +35,6 @@ def load_youtube(url: str) -> str:
     docs = YoutubeLoader.from_youtube_url(url, language=['pt']).load()
     return ''.join(d.page_content for d in docs)
 
-# Função de resposta
 def resposta_bot(history: list, contexto: str) -> str:
     system_msg = (
         "Você é um assistente amigável chamado Kuro. "
@@ -47,7 +45,6 @@ def resposta_bot(history: list, contexto: str) -> str:
     chain = prompt | chat
     return chain.invoke({'informacoes': contexto}).content
 
-# Template HTML
 HTML_TEMPLATE = '''
 <!doctype html>
 <html lang="pt-BR">
